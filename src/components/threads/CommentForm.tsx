@@ -68,7 +68,7 @@ export default function CommentForm({ threadId }: CommentFormProps) {
   }
 
   return (
-    <Card className="mt-6 shadow-md animate-fade-in">
+    <Card className="mt-6 animate-fade-in"> {/* Removed shadow-md */}
       <CardHeader>
         <CardTitle className="font-headline text-lg">Add a Comment</CardTitle>
       </CardHeader>

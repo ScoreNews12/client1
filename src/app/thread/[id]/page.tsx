@@ -48,7 +48,7 @@ export default function ThreadPage() {
 
   return (
     <div className="space-y-8">
-      <Card className="shadow-xl animate-fade-in">
+      <Card className="animate-fade-in"> {/* Removed shadow-xl */}
         <CardHeader>
           <CardTitle className="text-3xl md:text-4xl font-headline">{thread.title}</CardTitle>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground pt-2">
@@ -91,7 +91,7 @@ export default function ThreadPage() {
 function ThreadPageSkeleton() {
   return (
     <div className="space-y-8">
-      <Card className="shadow-xl">
+      <Card> {/* Removed shadow-xl */}
         <CardHeader>
           <Skeleton className="h-10 w-3/4 mb-2" />
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -112,7 +112,7 @@ function ThreadPageSkeleton() {
         <Skeleton className="h-8 w-1/4 mb-4" />
         <div className="space-y-4 mt-6">
           {[1,2].map(i => (
-            <Card key={i} className="mb-4 bg-secondary/30 shadow-sm">
+            <Card key={i} className="mb-4 bg-secondary/30"> {/* Removed shadow-sm */}
               <CardHeader className="pb-2 pt-4 px-4">
                 <div className="flex items-center gap-2">
                   <Skeleton className="h-8 w-8 rounded-full" />
@@ -133,4 +133,3 @@ function ThreadPageSkeleton() {
     </div>
   );
 }
-

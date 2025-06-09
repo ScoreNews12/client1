@@ -33,7 +33,7 @@ export default function AppHeader() {
   };
 
   return (
-    <header className="bg-card border-b border-border shadow-sm sticky top-0 z-50">
+    <header className="bg-card border-b border-border sticky top-0 z-50"> {/* Removed shadow-sm */}
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 text-primary hover:text-accent transition-colors">
           <MessageSquareText className="h-8 w-8" />

@@ -61,7 +61,7 @@ export default function AuthForm() {
 
   return (
     <div className="flex justify-center items-center py-12">
-      <Card className="w-full max-w-md shadow-xl">
+      <Card className="w-full max-w-md"> {/* Removed shadow-xl */}
         <CardHeader>
           <CardTitle className="text-3xl font-headline">{isSignUp ? 'Create Account' : 'Login'}</CardTitle>
           <CardDescription>

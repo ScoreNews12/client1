@@ -55,7 +55,7 @@ export default function ThreadForm() {
 
   if (!user) {
     return (
-      <Card className="mb-8 shadow-lg animate-fade-in">
+      <Card className="mb-8 animate-fade-in"> {/* Removed shadow-lg */}
         <CardHeader>
           <CardTitle className="font-headline">Login to Post</CardTitle>
         </CardHeader>
@@ -67,7 +67,7 @@ export default function ThreadForm() {
   }
 
   return (
-    <Card className="mb-8 shadow-lg animate-fade-in">
+    <Card className="mb-8 animate-fade-in"> {/* Removed shadow-lg */}
       <CardHeader>
         <CardTitle className="text-2xl font-headline">Create a New Thread</CardTitle>
         <CardDescription>Share your thoughts with the EchoThread community.</CardDescription>

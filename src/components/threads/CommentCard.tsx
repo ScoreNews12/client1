@@ -23,7 +23,7 @@ export default function CommentCard({ comment }: CommentCardProps) {
   };
   
   return (
-    <Card className="mb-4 bg-secondary/30 shadow-sm animate-fade-in">
+    <Card className="mb-4 bg-secondary/30 animate-fade-in"> {/* Removed shadow-sm */}
       <CardHeader className="pb-2 pt-4 px-4">
         <div className="flex items-center gap-2">
            <Avatar className="h-8 w-8">

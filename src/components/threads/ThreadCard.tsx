@@ -24,7 +24,7 @@ export default function ThreadCard({ thread }: ThreadCardProps) {
   };
 
   return (
-    <Card className="mb-6 shadow-lg hover:shadow-xl transition-shadow duration-300 animate-fade-in">
+    <Card className="mb-6 hover:border-primary/50 transition-colors duration-300 animate-fade-in"> {/* Removed shadow-lg hover:shadow-xl, added hover:border-primary/50 */}
       <CardHeader>
         <Link href={`/thread/${thread.id}`} className="hover:text-primary transition-colors">
           <CardTitle className="text-xl md:text-2xl font-headline">{thread.title}</CardTitle>
