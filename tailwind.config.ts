@@ -10,13 +10,46 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['sans-serif'], // Generic sans-serif
-        headline: ['serif'], // Generic serif
+        body: ['Arial', 'Helvetica', 'sans-serif'], // Basic system sans-serif
+        headline: ['"Times New Roman"', 'Times', 'serif'], // Basic system serif
         code: ['monospace'],
       },
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
+        
+        'header-title-background': 'hsl(var(--header-title-background))',
+        'header-title-text': 'hsl(var(--header-title-text))',
+        'header-subtitle-text': 'hsl(var(--header-subtitle-text))',
+        'info-bar-background': 'hsl(var(--info-bar-background))',
+        'info-bar-text': 'hsl(var(--info-bar-text))',
+        'announcement-bar-background': 'hsl(var(--announcement-bar-background))',
+        'announcement-bar-text': 'hsl(var(--announcement-bar-text))',
+        
+        'poll-background': 'hsl(var(--poll-background))',
+        'poll-title-text': 'hsl(var(--poll-title-text))',
+        'poll-option-border': 'hsl(var(--poll-option-border))',
+
+        'rules-background': 'hsl(var(--rules-background))',
+        'rules-border': 'hsl(var(--rules-border))',
+        'rules-text': 'hsl(var(--rules-text))',
+
+        'form-background': 'hsl(var(--form-background))',
+        'form-label-text': 'hsl(var(--form-label-text))',
+        'form-input-background': 'hsl(var(--form-input-background))',
+        'form-input-border': 'hsl(var(--form-input-border))',
+        'form-button-background': 'hsl(var(--form-button-background))',
+        'form-button-text': 'hsl(var(--form-button-text))',
+        'form-button-border': 'hsl(var(--form-button-border))',
+
+        'thread-card-background': 'hsl(var(--thread-card-background))',
+        'thread-card-border': 'hsl(var(--thread-card-border))',
+        'comment-card-background': 'hsl(var(--comment-card-background))',
+        'comment-card-border': 'hsl(var(--comment-card-border))',
+
+        'footer-background': 'hsl(var(--footer-background))',
+        'footer-text': 'hsl(var(--footer-text))',
+
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
@@ -48,28 +81,11 @@ export default {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
-        chart: {
-          '1': 'hsl(var(--chart-1))',
-          '2': 'hsl(var(--chart-2))',
-          '3': 'hsl(var(--chart-3))',
-          '4': 'hsl(var(--chart-4))',
-          '5': 'hsl(var(--chart-5))',
-        },
-        sidebar: {
-          DEFAULT: 'hsl(var(--sidebar-background))',
-          foreground: 'hsl(var(--sidebar-foreground))',
-          primary: 'hsl(var(--sidebar-primary))',
-          'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-          accent: 'hsl(var(--sidebar-accent))',
-          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-          border: 'hsl(var(--sidebar-border))',
-          ring: 'hsl(var(--sidebar-ring))',
-        },
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        lg: '0rem', // Sharp corners
+        md: '0rem', // Sharp corners
+        sm: '0rem', // Sharp corners
       },
       keyframes: {
         'accordion-down': {
@@ -96,8 +112,17 @@ export default {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        'fade-in': 'fade-in 0.5s ease-out',
+        'fade-in': 'fade-in 0.3s ease-out',
       },
+      boxShadow: { // Remove default shadows
+        sm: 'none',
+        DEFAULT: 'none',
+        md: 'none',
+        lg: 'none',
+        xl: 'none',
+        '2xl': 'none',
+        inner: 'none',
+      }
     },
   },
   plugins: [require('tailwindcss-animate')],

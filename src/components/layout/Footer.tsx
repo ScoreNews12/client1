@@ -1,13 +1,13 @@
 
 export default function AppFooter() {
   return (
-    <footer className="bg-card border-t border-border py-6 text-center">
-      <div className="container mx-auto px-4">
-        <p className="text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} EchoThread. All rights reserved.
+    <footer className="bg-footer-background border-t border-gray-400 py-3 text-center w-full">
+      <div className="px-4">
+        <p className="text-xs text-footer-text">
+          &copy; {new Date().getFullYear()} Anonymous Board - All posts are the responsibility of the individual poster.
         </p>
-        <p className="text-xs text-muted-foreground mt-1">
-          Built with Next.js and Tailwind CSS.
+        <p className="text-xs text-footer-text mt-0.5">
+          Server Time: {new Date().toLocaleTimeString()}
         </p>
       </div>
     </footer>

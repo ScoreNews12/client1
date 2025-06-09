@@ -14,7 +14,7 @@ interface CommentFormProps {
 }
 
 export default function CommentForm({ threadId }: CommentFormProps) {
-  const [authorUsername, setAuthorUsername] = useState('');
+  const [authorUsername, setAuthorUsername] = useState('Anonymous'); // Default to Anonymous
   const [authorEmail, setAuthorEmail] = useState('');
   const [content, setContent] = useState('');
   
@@ -22,17 +22,17 @@ export default function CommentForm({ threadId }: CommentFormProps) {
   const { toast } = useToast();
 
   const handleReset = () => {
-    setAuthorUsername('');
-    setAuthorEmail('');
+    // setAuthorUsername('Anonymous');
+    // setAuthorEmail('');
     setContent('');
   };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!authorUsername.trim() || !authorEmail.trim() || !content.trim()) {
+    if (!content.trim()) {
       toast({
         title: 'Missing Information',
-        description: 'Please fill in all fields: Name, E-mail, and Comment.',
+        description: 'Please fill in the Comment field.',
         variant: 'destructive',
       });
       return;
@@ -40,8 +40,8 @@ export default function CommentForm({ threadId }: CommentFormProps) {
 
     addComment(threadId, {
       content,
-      authorEmail,
-      authorUsername,
+      authorEmail: authorEmail.trim(),
+      authorUsername: authorUsername.trim() || "Anonymous",
     });
 
     toast({
@@ -52,53 +52,50 @@ export default function CommentForm({ threadId }: CommentFormProps) {
   };
 
   return (
-    <div className="mt-6 p-6 rounded-none border-t border-b border-purple-400" style={{ backgroundColor: 'hsl(255, 30%, 92%)' }}>
-      <form onSubmit={handleSubmit} onReset={handleReset} className="space-y-3">
+    <div className="mt-3 p-3 bg-form-background border-t border-b border-form-input-border">
+      <form onSubmit={handleSubmit} onReset={handleReset} className="space-y-2 text-xs">
         <div className="flex items-center space-x-2">
-          <Label htmlFor={`comment-username-${threadId}`} className="w-20 text-red-700 font-semibold">Name:</Label>
+          <Label htmlFor={`comment-username-${threadId}`} className="w-12 text-form-label-text font-normal">Name:</Label>
           <Input
             id={`comment-username-${threadId}`}
-            placeholder="Your name"
+            placeholder="Anonymous"
             value={authorUsername}
             onChange={(e) => setAuthorUsername(e.target.value)}
-            required
-            className="flex-1 bg-white border-gray-400 focus:border-red-500 focus:ring-red-500"
+            className="flex-1 bg-form-input-background border-form-input-border text-foreground h-6 px-1 py-0.5 text-xs"
           />
-        </div>
-        <div className="flex items-center space-x-2">
-          <Label htmlFor={`comment-email-${threadId}`} className="w-20 text-red-700 font-semibold">E-mail:</Label>
+           <Label htmlFor={`comment-email-${threadId}`} className="w-12 text-form-label-text font-normal ml-2">E-mail:</Label>
           <Input
             id={`comment-email-${threadId}`}
             type="email"
-            placeholder="Your e-mail"
+            placeholder="(sage)"
             value={authorEmail}
             onChange={(e) => setAuthorEmail(e.target.value)}
-            required
-            className="flex-1 bg-white border-gray-400 focus:border-red-500 focus:ring-red-500"
+            className="flex-1 bg-form-input-background border-form-input-border text-foreground h-6 px-1 py-0.5 text-xs"
           />
         </div>
         <div>
-          <Label htmlFor={`comment-content-${threadId}`} className="block mb-1 text-red-700 font-semibold">Comment:</Label>
+          <Label htmlFor={`comment-content-${threadId}`} className="block mb-0.5 text-form-label-text font-normal">Comment:</Label>
           <Textarea
             id={`comment-content-${threadId}`}
             placeholder="Share your thoughts..."
             value={content}
             onChange={(e) => setContent(e.target.value)}
             required
-            rows={3}
-            className="bg-white border-gray-400 focus:border-red-500 focus:ring-red-500"
+            rows={2}
+            className="bg-form-input-background border-form-input-border text-foreground p-1 text-xs min-h-[50px]"
           />
         </div>
-        <div className="flex space-x-2 pt-2">
+        <div className="flex space-x-2 pt-1">
           <Button 
             type="submit"
-            className="px-4 py-1.5 bg-neutral-200 border border-neutral-400 rounded-sm text-sm text-black hover:bg-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-offset-1"
+            className="px-3 py-0.5 h-6 bg-form-button-background border border-form-button-border rounded-none text-xs text-form-button-text hover:bg-gray-300 focus:ring-0"
           >
             Post Comment
           </Button>
           <Button 
             type="reset"
-            className="px-4 py-1.5 bg-neutral-200 border border-neutral-400 rounded-sm text-sm text-black hover:bg-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-offset-1"
+            variant="outline"
+            className="px-3 py-0.5 h-6 bg-form-button-background border border-form-button-border rounded-none text-xs text-form-button-text hover:bg-gray-300 focus:ring-0"
           >
             Reset
           </Button>

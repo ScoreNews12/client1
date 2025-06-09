@@ -4,111 +4,164 @@
 
 @layer base {
   :root {
-    --background: 255 30% 92%; /* Light Lavender/Purple from image */
-    --foreground: 0 0% 15%; /* Dark Grey */
+    /* Retro Theme based on image */
+    --background: 48 33% 96%; /* Very light beige/off-white for page background */
+    --foreground: 0 0% 10%; /* Dark Gray / Near Black for general text */
 
-    --card: 255 30% 92%; /* Card to match background or be transparent */
-    --card-foreground: 0 0% 15%; /* Dark Grey */
+    --header-title-background: 48 33% 96%; /* Top part of header */
+    --header-title-text: 0 80% 50%; /* Bright Red for main title */
+    --header-subtitle-text: 0 0% 5%; /* Black for subtitle */
 
-    --popover: 0 0% 100%; /* White */
-    --popover-foreground: 0 0% 15%; /* Dark Grey */
+    --info-bar-background: 0 0% 90%; /* Light gray for info bar */
+    --info-bar-text: 0 0% 100%; /* White for info bar text */
 
-    --primary: 0 85% 55%; /* Bright Red */
-    --primary-foreground: 0 0% 100%; /* White */
+    --announcement-bar-background: 0 100% 50%; /* Bright Red for announcement bar */
+    --announcement-bar-text: 0 0% 100%; /* White for announcement bar text */
 
-    --secondary: 30 100% 92%; /* Light Peach */
-    --secondary-foreground: 0 0% 15%; /* Dark Grey */
+    --poll-background: 260 40% 94%; /* Light grayish purple for poll section */
+    --poll-title-text: 0 70% 40%; /* Dark Red for poll title */
+    --poll-option-border: 0 0% 80%; /* Light gray border for poll options */
 
-    --muted: 0 0% 94%; /* Light Grey */
-    --muted-foreground: 0 0% 40%; /* Medium Grey */
+    --rules-background: 39 100% 88%; /* Light peach/orange for rules section */
+    --rules-border: 39 80% 75%; /* Darker peach/orange for rules border */
+    --rules-text: 0 0% 10%;
 
-    --accent: 0 85% 55%; /* Bright Red */
-    --accent-foreground: 0 0% 100%; /* White */
+    --form-background: 255 40% 93%; /* Light lavender for forms */
+    --form-label-text: 0 70% 35%; /* Dark Red for form labels */
+    --form-input-background: 0 0% 100%; /* White for input fields */
+    --form-input-border: 0 0% 70%; /* Medium Gray for input borders */
+    --form-button-background: 0 0% 88%; /* Light gray for form buttons */
+    --form-button-text: 0 0% 20%; /* Dark gray for form button text */
+    --form-button-border: 0 0% 70%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --thread-card-background: 0 0% 100%; /* White for thread cards */
+    --thread-card-border: 0 0% 85%; /* Light gray border for thread cards */
+    
+    --comment-card-background: 260 20% 95%; /* Slightly different for comments if needed */
+    --comment-card-border: 260 20% 85%;
 
-    --border: 250 30% 70%; /* Muted Purple-Blue */
-    --input: 250 30% 70%; /* Muted Purple-Blue for border, input bg is --background */
-    --ring: 0 85% 55%; /* Bright Red for focus rings */
+    --footer-background: 48 33% 96%; /* Same as top header, very light beige */
+    --footer-text: 0 0% 10%;
 
-    --radius: 0rem; /* Sharp corners */
+    /* ShadCN Overrides / Base Elements */
+    --card: var(--background); /* Default card to match page bg or be specific */
+    --card-foreground: var(--foreground);
 
-    /* Chart colors */
-    --chart-1: 0 85% 55%; /* Primary Red */
-    --chart-2: 30 80% 60%; /* Orange */
-    --chart-3: 250 30% 85%; /* Muted Light Purple/Blue */
-    --chart-4: 0 0% 20%; /* Dark Grey */
-    --chart-5: 0 0% 50%; /* Medium Grey */
+    --popover: hsl(var(--background));
+    --popover-foreground: hsl(var(--foreground));
 
-    /* Sidebar specific colors (adjusted to new theme) */
-    --sidebar-background: 30 100% 96%; /* Lighter Peach */
-    --sidebar-foreground: 0 0% 15%;
-    --sidebar-primary: 0 85% 55%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 85% 55%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 250 20% 75%;
-    --sidebar-ring: 0 85% 55%;
-  }
-
-  .dark {
-    --background: 220 10% 10%; /* Very Dark Desaturated Blue */
-    --foreground: 0 0% 90%; /* Light Grey */
-
-    --card: 220 10% 15%; /* Darker Grey */
-    --card-foreground: 0 0% 90%;
-
-    --popover: 220 10% 15%;
-    --popover-foreground: 0 0% 90%;
-
-    --primary: 0 70% 65%; /* Less Intense Red */
+    --primary: hsl(var(--header-title-text)); /* Main red for accents if needed elsewhere */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 10% 25%; /* Dark Muted Blue/Grey for peach equivalent */
-    --secondary-foreground: 0 0% 90%;
+    --secondary: hsl(var(--poll-background)); 
+    --secondary-foreground: hsl(var(--foreground));
 
-    --muted: 220 10% 20%; /* Darker Grey */
-    --muted-foreground: 0 0% 60%; /* Grey */
+    --muted: 0 0% 92%; /* Lighter gray for muted elements */
+    --muted-foreground: 0 0% 45%; 
 
-    --accent: 0 70% 65%;
+    --accent: hsl(var(--header-title-text)); /* Red as accent */
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 84.2% 60.2%; /* Default destructive, can be tweaked */
     --destructive-foreground: 0 0% 98%;
 
-    --border: 250 15% 40%; /* Muted Dark Blue/Grey */
-    --input: 250 15% 40%;
-    --ring: 0 70% 65%;
-    
-    /* Chart colors for dark mode */
-    --chart-1: 0 70% 65%;
-    --chart-2: 30 60% 70%;
-    --chart-3: 250 20% 35%;
-    --chart-4: 0 0% 90%;
-    --chart-5: 0 0% 60%;
+    --border: hsl(var(--form-input-border)); /* Default border for components */
+    --input: hsl(var(--form-input-border)); /* Input component default border */
+    --ring: hsl(var(--header-title-text)); /* Focus ring color */
 
-    /* Sidebar specific colors for dark mode */
-    --sidebar-background: 220 10% 8%;
-    --sidebar-foreground: 0 0% 90%;
-    --sidebar-primary: 0 70% 65%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 70% 65%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 250 15% 25%;
-    --sidebar-ring: 0 70% 65%;
+    --radius: 0rem; /* SHARP CORNERS EVERYWHERE */
+  }
+
+  /* Dark theme is not specified in the image, so we'll make it a simple inversion or a basic dark retro */
+  .dark {
+    --background: 240 5% 10%; /* Dark blue/gray */
+    --foreground: 0 0% 90%; /* Light gray text */
+
+    --header-title-background: 240 5% 10%;
+    --header-title-text: 0 80% 65%; /* Brighter Red for dark mode */
+    --header-subtitle-text: 0 0% 95%;
+
+    --info-bar-background: 0 0% 20%; 
+    --info-bar-text: 0 0% 80%; 
+
+    --announcement-bar-background: 0 100% 45%; 
+    --announcement-bar-text: 0 0% 90%;
+
+    --poll-background: 260 20% 15%; 
+    --poll-title-text: 0 70% 55%; 
+    --poll-option-border: 0 0% 30%;
+
+    --rules-background: 35 60% 20%; 
+    --rules-border: 35 50% 30%; 
+    --rules-text: 0 0% 85%;
+
+    --form-background: 255 20% 18%; 
+    --form-label-text: 0 70% 50%; 
+    --form-input-background: 0 0% 12%; 
+    --form-input-border: 0 0% 40%; 
+    --form-button-background: 0 0% 25%; 
+    --form-button-text: 0 0% 80%; 
+    --form-button-border: 0 0% 40%;
+
+    --thread-card-background: 240 5% 12%;
+    --thread-card-border: 0 0% 25%;
+    
+    --comment-card-background: 260 15% 17%;
+    --comment-card-border: 260 15% 27%;
+
+    --footer-background: 240 5% 10%;
+    --footer-text: 0 0% 80%;
+
+    --card: var(--background);
+    --card-foreground: var(--foreground);
+    --popover: hsl(var(--background));
+    --popover-foreground: hsl(var(--foreground));
+    --primary: hsl(var(--header-title-text));
+    --primary-foreground: 0 0% 10%;
+    --secondary: hsl(var(--poll-background));
+    --secondary-foreground: hsl(var(--foreground));
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 65%;
+    --accent: hsl(var(--header-title-text));
+    --accent-foreground: 0 0% 10%;
+    --border: hsl(var(--form-input-border));
+    --input: hsl(var(--form-input-border));
+    --ring: hsl(var(--header-title-text));
   }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border; /* Default border color for elements */
+    border-radius: 0 !important; /* Ensure sharp corners */
   }
   body {
-    @apply bg-background text-foreground;
-    @apply antialiased;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    @apply font-body text-sm; /* Default small text size */
+    -webkit-font-smoothing: auto; /* More retro font rendering */
+    -moz-osx-font-smoothing: auto;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-headline;
+    @apply font-headline; /* Use serif for headlines */
+  }
+  input, textarea, select, button {
+    border-radius: 0 !important;
+    @apply border;
+    border-color: hsl(var(--form-input-border));
+  }
+  /* Remove default ShadCN focus rings if they conflict with retro style */
+  *:focus-visible {
+    outline-color: hsl(var(--ring));
+    outline-offset: 1px;
+    outline-width: 1px;
+  }
+  /* General link style */
+  a {
+    color: hsl(var(--primary)); /* Use primary red for links */
+    text-decoration: underline;
+  }
+  a:hover {
+    color: hsl(var(--accent)); /* Darker red on hover */
   }
 }

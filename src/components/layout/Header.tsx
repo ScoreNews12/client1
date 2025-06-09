@@ -2,22 +2,42 @@
 "use client";
 
 import Link from 'next/link';
-import { MessageSquareText } from 'lucide-react';
 
 export default function AppHeader() {
   return (
-    <header className="bg-card border-b border-border sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 text-primary hover:text-accent transition-colors">
-          <MessageSquareText className="h-8 w-8" />
-          <h1 className="text-2xl font-headline font-bold">EchoThread</h1>
-        </Link>
+    <header className="w-full text-xs">
+      {/* Top Title Bar */}
+      <div className="bg-header-title-background text-center py-2 border-b border-gray-400">
+        <h1 className="text-3xl font-headline font-bold text-header-title-text">
+          <Link href="/">ヽ(´▽｀)ノ 匿名掲示板へようこそ！ ヽ(´▽｀)ノ</Link>
+        </h1>
+        <p className="text-header-subtitle-text text-sm">
+          ～最強の掲示板サイト～ EXTREME TEXTBOARD EXPERIENCE
+        </p>
+      </div>
 
-        <div className="flex items-center gap-3">
-          {/* Auth-related UI removed, Search UI removed */}
+      {/* Middle Info Bar (Static content based on image) */}
+      <div className="bg-info-bar-background text-info-bar-text py-1 px-2 border-b border-gray-500 flex justify-between items-center text-[10px] md:text-xs">
+        <div>
+          <span>Your IP: 140.13.87.100</span> | <span>Browser: Chrome</span> | <span>Local: ▲ 21.6°C</span> 
+        </div>
+        <div className="hidden md:block">
+          <span>Tokyo: ▼ 21.6°C</span> | <span>New York: ▲ 19.4°C</span> | <span>London: ▲ 14.0°C</span> | <span>Sydney: ▼ 24.1°C</span>
         </div>
       </div>
-      {/* Mobile search form removed */}
+      <div className="bg-info-bar-background text-info-bar-text py-1 px-2 border-b border-gray-500 text-[10px] md:text-xs">
+        <span>現在のレス投稿数：187件 本日の投稿数：187件</span>
+      </div>
+
+
+      {/* Bottom Announcement Bar (Static content based on image) */}
+      <div className="bg-announcement-bar-background text-announcement-bar-text py-1 px-2 border-b-2 border-black flex items-center overflow-x-hidden whitespace-nowrap">
+        <span className="text-yellow-300">★★★</span>
+        <span className="ml-2">
+          継続寄付のお願い！毎月¥10,000が点灯決定！保証回数UP！先着注意！VIP会員特典！立候補点灯！規制低減！
+        </span>
+         <span className="ml-auto text-yellow-300">★★★</span>
+      </div>
     </header>
   );
 }

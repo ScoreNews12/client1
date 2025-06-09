@@ -10,7 +10,7 @@ import { useThreads } from '@/contexts/ThreadsContext';
 import { useToast } from '@/hooks/use-toast';
 
 export default function ThreadForm() {
-  const [authorUsername, setAuthorUsername] = useState('');
+  const [authorUsername, setAuthorUsername] = useState('Anonymous'); // Default to Anonymous
   const [authorEmail, setAuthorEmail] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -19,101 +19,98 @@ export default function ThreadForm() {
   const { toast } = useToast();
 
   const handleReset = () => {
-    setAuthorUsername('');
-    setAuthorEmail('');
+    // setAuthorUsername('Anonymous'); // Keep Anonymous or reset if preferred
+    // setAuthorEmail(''); // Keep email or reset
     setTitle('');
     setContent('');
   };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!authorUsername.trim() || !authorEmail.trim() || !title.trim() || !content.trim()) {
+    if (!title.trim() || !content.trim()) {
       toast({
         title: 'Missing Information',
-        description: 'Please fill in all fields: Name, E-mail, Title, and Content.',
+        description: 'Please fill in Title and Content.',
         variant: 'destructive',
       });
       return;
     }
+    // Email is optional, username defaults to Anonymous
 
     addThread({
       title,
       content,
-      authorEmail,
-      authorUsername,
+      authorEmail: authorEmail.trim(), // Send empty string if not filled
+      authorUsername: authorUsername.trim() || 'Anonymous', // Ensure Anonymous if empty
     });
 
     toast({
       title: 'Thread Posted!',
       description: 'Your thread is now live.',
     });
-    handleReset(); // Clear form fields
+    handleReset(); 
   };
 
   return (
-    <div className="mb-8 p-6 rounded-none border-t border-b border-purple-400" style={{ backgroundColor: 'hsl(255, 30%, 92%)' }}>
-      <form onSubmit={handleSubmit} onReset={handleReset} className="space-y-3">
-        <div className="flex items-center space-x-2">
-          <Label htmlFor="thread-username" className="w-20 text-red-700 font-semibold">Name:</Label>
-          <Input
-            id="thread-username"
-            placeholder="Your name"
-            value={authorUsername}
-            onChange={(e) => setAuthorUsername(e.target.value)}
-            required
-            className="flex-1 bg-white border-gray-400 focus:border-red-500 focus:ring-red-500"
-          />
-        </div>
-        <div className="flex items-center space-x-2">
-          <Label htmlFor="thread-email" className="w-20 text-red-700 font-semibold">E-mail:</Label>
-          <Input
-            id="thread-email"
-            type="email"
-            placeholder="Your e-mail"
-            value={authorEmail}
-            onChange={(e) => setAuthorEmail(e.target.value)}
-            required
-            className="flex-1 bg-white border-gray-400 focus:border-red-500 focus:ring-red-500"
-          />
-        </div>
-        <div className="flex items-center space-x-2">
-          <Label htmlFor="thread-title" className="w-20 text-red-700 font-semibold">Title:</Label>
-          <Input
-            id="thread-title"
-            placeholder="Thread title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            className="flex-1 bg-white border-gray-400 focus:border-red-500 focus:ring-red-500"
-          />
-        </div>
-        <div>
-          <Label htmlFor="thread-content" className="block mb-1 text-red-700 font-semibold">Content:</Label>
-          <Textarea
-            id="thread-content"
-            placeholder="What's on your mind?"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            required
-            rows={4}
-            className="bg-white border-gray-400 focus:border-red-500 focus:ring-red-500"
-          />
-        </div>
-        <div className="flex space-x-2 pt-2">
-          <Button 
-            type="submit"
-            className="px-4 py-1.5 bg-neutral-200 border border-neutral-400 rounded-sm text-sm text-black hover:bg-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-offset-1"
-          >
-            Post
-          </Button>
-          <Button 
-            type="reset"
-            className="px-4 py-1.5 bg-neutral-200 border border-neutral-400 rounded-sm text-sm text-black hover:bg-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-offset-1"
-          >
-            Reset
-          </Button>
-        </div>
-      </form>
-    </div>
+    // Form container styling is handled by parent (src/app/page.tsx)
+    <form onSubmit={handleSubmit} onReset={handleReset} className="space-y-2 text-xs">
+      <div className="flex items-center space-x-2">
+        <Label htmlFor="thread-username" className="w-12 text-form-label-text font-normal">Name:</Label>
+        <Input
+          id="thread-username"
+          placeholder="Anonymous"
+          value={authorUsername}
+          onChange={(e) => setAuthorUsername(e.target.value)}
+          className="flex-1 bg-form-input-background border-form-input-border text-foreground h-6 px-1 py-0.5 text-xs"
+        />
+        <Label htmlFor="thread-email" className="w-12 text-form-label-text font-normal ml-2">E-mail:</Label>
+        <Input
+          id="thread-email"
+          type="email"
+          placeholder="(sage)"
+          value={authorEmail}
+          onChange={(e) => setAuthorEmail(e.target.value)}
+          className="flex-1 bg-form-input-background border-form-input-border text-foreground h-6 px-1 py-0.5 text-xs"
+        />
+      </div>
+       <div className="flex items-center space-x-2">
+        <Label htmlFor="thread-title" className="w-12 text-form-label-text font-normal">Title:</Label>
+        <Input
+          id="thread-title"
+          placeholder="Thread title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+          className="flex-1 bg-form-input-background border-form-input-border text-foreground h-6 px-1 py-0.5 text-xs"
+        />
+      </div>
+      <div>
+        <Label htmlFor="thread-content" className="block mb-0.5 text-form-label-text font-normal">Content:</Label>
+        <Textarea
+          id="thread-content"
+          placeholder="What's on your mind?"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          required
+          rows={3}
+          className="bg-form-input-background border-form-input-border text-foreground p-1 text-xs min-h-[60px]"
+        />
+      </div>
+      <div className="flex space-x-2 pt-1">
+        <Button 
+          type="submit"
+          className="px-3 py-0.5 h-6 bg-form-button-background border border-form-button-border rounded-none text-xs text-form-button-text hover:bg-gray-300 focus:ring-0"
+        >
+          Post
+        </Button>
+        <Button 
+          type="reset"
+          variant="outline"
+          className="px-3 py-0.5 h-6 bg-form-button-background border border-form-button-border rounded-none text-xs text-form-button-text hover:bg-gray-300 focus:ring-0"
+        >
+          Reset
+        </Button>
+      </div>
+    </form>
   );
 }

@@ -6,8 +6,8 @@ import AppFooter from '@/components/layout/Footer';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'EchoThread - Share Your Voice',
-  description: 'A community platform for posting and discussing threads.',
+  title: 'ヽ(´▽｀)ノ 匿名掲示板へようこそ！ ヽ(´▽｀)ノ',
+  description: '～最強の掲示板サイト～ EXTREME TEXTBOARD EXPERIENCE',
 };
 
 export default function RootLayout({
@@ -16,15 +16,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ja"> {/* Set language to Japanese */}
       <head>
         {/* Removed Google Fonts links */}
       </head>
-      <body className="font-body antialiased">
+      <body className="font-body text-foreground bg-background">
         <ThreadsProvider>
           <div className="flex flex-col min-h-screen">
             <AppHeader />
-            <main className="flex-grow container mx-auto px-4 py-8">
+            {/* Adjusted main content area styling */}
+            <main className="flex-grow w-full">
               {children}
             </main>
             <AppFooter />
