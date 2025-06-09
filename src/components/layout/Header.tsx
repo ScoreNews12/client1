@@ -4,6 +4,7 @@
 import Link from 'next/link';
 
 export default function AppHeader() {
+  const newMarqueeText = "💰💰💰 赚钱机会！每天¥10,000! 点击这里! 💯保证赚钱! 免费注册! VIP会员特惠! 立即点击! 限时优惠!";
   return (
     <header className="w-full text-xs">
       {/* Top Title Bar */}
@@ -29,20 +30,18 @@ export default function AppHeader() {
         <span>現在のレス投稿数：187件 本日の投稿数：187件</span>
       </div>
 
-      {/* Bottom Announcement Bar - Now with scrolling */}
+      {/* Bottom Announcement Bar - Updated Marquee */}
       <div className="bg-announcement-bar-background text-announcement-bar-text py-1 px-2 border-b-2 border-black flex items-center overflow-hidden">
         <span className="text-yellow-300 shrink-0">★★★</span>
-        {/* The marquee container */}
-        <div 
-          className="flex-1 mx-2 overflow-hidden whitespace-nowrap"
-        >
-          <div className="flex animate-marquee"> {/* Changed from inline-block to flex */}
-            {/* Repeated text for seamless scrolling */}
-            <span className="px-2 whitespace-nowrap flex-shrink-0">
-              継続寄付のお願い！毎月¥10,000が点灯決定！保証回数UP！先着注意！VIP会員特典！立候補点灯！規制低減！
+        {/* The marquee viewport (ad-marquee equivalent) */}
+        <div className="flex-1 mx-2 overflow-hidden">
+          {/* The scrolling content (marquee-content equivalent) */}
+          <div className="animate-marquee whitespace-nowrap">
+            <span className="px-2 inline-block">
+              {newMarqueeText}
             </span>
-            <span className="px-2 whitespace-nowrap flex-shrink-0">
-              継続寄付のお願い！毎月¥10,000が点灯決定！保証回数UP！先着注意！VIP会員特典！立候補点灯！規制低減！
+            <span className="px-2 inline-block"> {/* Duplicated content for seamless scroll */}
+              {newMarqueeText}
             </span>
           </div>
         </div>
