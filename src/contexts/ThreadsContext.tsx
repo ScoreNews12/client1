@@ -3,13 +3,14 @@
 
 import type { Thread, Comment } from '@/lib/types';
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { logUserDataAction } from '@/app/actions'; // Import the server action
 
 interface ThreadsContextType {
   threads: Thread[];
   addThread: (threadData: Omit<Thread, 'id' | 'timestamp' | 'comments'>) => void;
   addComment: (threadId: string, commentData: Omit<Comment, 'id' | 'timestamp' | 'threadId'>) => void;
   getThreadById: (id: string) => Thread | undefined;
-  deleteThread: (threadId: string) => void; // New delete function
+  deleteThread: (threadId: string) => void; 
   isLoading: boolean;
 }
 
@@ -43,20 +44,27 @@ export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [threads, isLoading]);
 
-  const addThread = (threadData: Omit<Thread, 'id' | 'timestamp' | 'comments'>) => {
+  const addThread = async (threadData: Omit<Thread, 'id' | 'timestamp' | 'comments'>) => {
     const newThread: Thread = {
       ...threadData,
-      id: Date.now().toString() + Math.random().toString(36).substring(2, 7), // More unique ID
+      id: Date.now().toString() + Math.random().toString(36).substring(2, 7),
       timestamp: new Date().toISOString(),
       comments: [],
     };
     setThreads((prevThreads) => [newThread, ...prevThreads]);
+
+    // Log user data using the server action
+    try {
+      await logUserDataAction(newThread.authorUsername, newThread.authorEmail, 'Posted Thread');
+    } catch (error) {
+      console.error("Error logging user data for new thread:", error);
+    }
   };
 
-  const addComment = (threadId: string, commentData: Omit<Comment, 'id' | 'timestamp' | 'threadId'>) => {
+  const addComment = async (threadId: string, commentData: Omit<Comment, 'id' | 'timestamp' | 'threadId'>) => {
     const newComment: Comment = {
       ...commentData,
-      id: Date.now().toString() + Math.random().toString(36).substring(2, 7), // More unique ID
+      id: Date.now().toString() + Math.random().toString(36).substring(2, 7),
       timestamp: new Date().toISOString(),
       threadId,
     };
@@ -67,6 +75,13 @@ export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
           : thread
       )
     );
+
+    // Log user data using the server action
+    try {
+      await logUserDataAction(newComment.authorUsername, newComment.authorEmail, 'Posted Comment');
+    } catch (error) {
+      console.error("Error logging user data for new comment:", error);
+    }
   };
 
   const getThreadById = (id: string) => {
