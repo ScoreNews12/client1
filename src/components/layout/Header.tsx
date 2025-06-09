@@ -29,14 +29,22 @@ export default function AppHeader() {
         <span>現在のレス投稿数：187件 本日の投稿数：187件</span>
       </div>
 
-
-      {/* Bottom Announcement Bar (Static content based on image) */}
-      <div className="bg-announcement-bar-background text-announcement-bar-text py-1 px-2 border-b-2 border-black flex items-center overflow-x-hidden whitespace-nowrap">
-        <span className="text-yellow-300">★★★</span>
-        <span className="ml-2">
-          継続寄付のお願い！毎月¥10,000が点灯決定！保証回数UP！先着注意！VIP会員特典！立候補点灯！規制低減！
-        </span>
-         <span className="ml-auto text-yellow-300">★★★</span>
+      {/* Bottom Announcement Bar - Now with scrolling */}
+      <div className="bg-announcement-bar-background text-announcement-bar-text py-1 px-2 border-b-2 border-black flex items-center overflow-hidden">
+        <span className="text-yellow-300 shrink-0">★★★</span>
+        {/* The marquee container */}
+        <div className="flex-1 mx-2 overflow-hidden whitespace-nowrap">
+          <div className="inline-block animate-marquee">
+            {/* Repeated text for seamless scrolling */}
+            <span className="px-2">
+              継続寄付のお願い！毎月¥10,000が点灯決定！保証回数UP！先着注意！VIP会員特典！立候補点灯！規制低減！
+            </span>
+            <span className="px-2">
+              継続寄付のお願い！毎月¥10,000が点灯決定！保証回数UP！先着注意！VIP会員特典！立候補点灯！規制低減！
+            </span>
+          </div>
+        </div>
+        <span className="text-yellow-300 shrink-0">★★★</span>
       </div>
     </header>
   );
