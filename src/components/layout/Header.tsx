@@ -29,16 +29,12 @@ export default function AppHeader() {
         <span>現在のレス投稿数：187件 本日の投稿数：187件</span>
       </div>
 
-      {/* Bottom Announcement Bar - Now with scrolling and fade */}
+      {/* Bottom Announcement Bar - Now with scrolling */}
       <div className="bg-announcement-bar-background text-announcement-bar-text py-1 px-2 border-b-2 border-black flex items-center overflow-hidden">
         <span className="text-yellow-300 shrink-0">★★★</span>
-        {/* The marquee container with mask */}
+        {/* The marquee container without mask */}
         <div 
           className="flex-1 mx-2 overflow-hidden whitespace-nowrap"
-          style={{
-            maskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)', // For Safari compatibility
-          }}
         >
           <div className="inline-block animate-marquee">
             {/* Repeated text for seamless scrolling */}
