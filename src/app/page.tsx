@@ -6,6 +6,8 @@ import ThreadList from '@/components/threads/ThreadList';
 import { useThreads } from '@/contexts/ThreadsContext';
 import TodaysPoll from '@/components/custom/TodaysPoll';
 import BoardRules from '@/components/custom/BoardRules';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export default function HomePage() {
   const { threads, isLoading } = useThreads();
@@ -20,6 +22,15 @@ export default function HomePage() {
       <div className="p-2 md:p-3">
         {/* Removed title "Latest Threads" as it's not in the target design */}
         <ThreadList threads={threads} isLoading={isLoading} />
+      </div>
+      <div className="text-center py-4 px-2">
+        <Button 
+          asChild 
+          variant="outline" 
+          className="px-3 py-1 h-auto text-xs bg-form-button-background text-form-button-text border-form-button-border hover:bg-gray-300"
+        >
+          <Link href="/admin/login">Admin Panel</Link>
+        </Button>
       </div>
     </div>
   );
