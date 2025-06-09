@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import { ThreadsProvider } from '@/contexts/ThreadsContext';
 import { AdminAuthProvider } from '@/contexts/AdminAuthContext'; // Import AdminAuthProvider
@@ -17,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja"> {/* Set language to Japanese */}
+    <html lang="ja">{/* Set language to Japanese */}
       <head>
         {/* Removed Google Fonts links */}
       </head>
