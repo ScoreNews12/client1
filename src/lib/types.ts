@@ -22,3 +22,9 @@ export type Thread = {
   timestamp: string; // ISO string for easier serialization
   comments: Comment[];
 };
+
+// Admin types (can be expanded later if needed)
+export type AdminCredentials = {
+  username: string;
+  password?: string; // Password is used for login, not stored long-term
+};

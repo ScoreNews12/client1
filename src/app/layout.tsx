@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { ThreadsProvider } from '@/contexts/ThreadsContext';
+import { AdminAuthProvider } from '@/contexts/AdminAuthContext'; // Import AdminAuthProvider
 import { Toaster } from '@/components/ui/toaster';
 import AppHeader from '@/components/layout/Header';
 import AppFooter from '@/components/layout/Footer';
@@ -21,17 +22,18 @@ export default function RootLayout({
         {/* Removed Google Fonts links */}
       </head>
       <body className="font-body text-foreground bg-background">
-        <ThreadsProvider>
-          <div className="flex flex-col min-h-screen">
-            <AppHeader />
-            {/* Adjusted main content area styling */}
-            <main className="flex-grow w-full">
-              {children}
-            </main>
-            <AppFooter />
-          </div>
-          <Toaster />
-        </ThreadsProvider>
+        <AdminAuthProvider> {/* Wrap ThreadsProvider with AdminAuthProvider */}
+          <ThreadsProvider>
+            <div className="flex flex-col min-h-screen">
+              <AppHeader />
+              <main className="flex-grow w-full">
+                {children}
+              </main>
+              <AppFooter />
+            </div>
+            <Toaster />
+          </ThreadsProvider>
+        </AdminAuthProvider>
       </body>
     </html>
   );

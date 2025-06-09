@@ -9,12 +9,13 @@ interface ThreadsContextType {
   addThread: (threadData: Omit<Thread, 'id' | 'timestamp' | 'comments'>) => void;
   addComment: (threadId: string, commentData: Omit<Comment, 'id' | 'timestamp' | 'threadId'>) => void;
   getThreadById: (id: string) => Thread | undefined;
+  deleteThread: (threadId: string) => void; // New delete function
   isLoading: boolean;
 }
 
 const ThreadsContext = createContext<ThreadsContextType | undefined>(undefined);
 
-const initialThreads: Thread[] = []; // Removed initial threads
+const initialThreads: Thread[] = []; 
 
 
 export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
@@ -22,18 +23,21 @@ export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate loading threads from storage or API
     const storedThreads = localStorage.getItem('echoThreads');
     if (storedThreads) {
-      setThreads(JSON.parse(storedThreads));
+      try {
+        setThreads(JSON.parse(storedThreads));
+      } catch (error) {
+        console.error("Failed to parse threads from localStorage", error);
+        setThreads(initialThreads); 
+      }
     } else {
-      setThreads(initialThreads); // Load initial (now empty) if nothing in storage
+      setThreads(initialThreads); 
     }
     setIsLoading(false);
   }, []);
 
   useEffect(() => {
-    // Persist threads to localStorage whenever they change
     if (!isLoading) {
       localStorage.setItem('echoThreads', JSON.stringify(threads));
     }
@@ -42,7 +46,7 @@ export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
   const addThread = (threadData: Omit<Thread, 'id' | 'timestamp' | 'comments'>) => {
     const newThread: Thread = {
       ...threadData,
-      id: Date.now().toString(),
+      id: Date.now().toString() + Math.random().toString(36).substring(2, 7), // More unique ID
       timestamp: new Date().toISOString(),
       comments: [],
     };
@@ -52,7 +56,7 @@ export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
   const addComment = (threadId: string, commentData: Omit<Comment, 'id' | 'timestamp' | 'threadId'>) => {
     const newComment: Comment = {
       ...commentData,
-      id: Date.now().toString(),
+      id: Date.now().toString() + Math.random().toString(36).substring(2, 7), // More unique ID
       timestamp: new Date().toISOString(),
       threadId,
     };
@@ -69,8 +73,12 @@ export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
     return threads.find((thread) => thread.id === id);
   };
 
+  const deleteThread = (threadId: string) => {
+    setThreads((prevThreads) => prevThreads.filter(thread => thread.id !== threadId));
+  };
+
   return (
-    <ThreadsContext.Provider value={{ threads, addThread, addComment, getThreadById, isLoading }}>
+    <ThreadsContext.Provider value={{ threads, addThread, addComment, getThreadById, deleteThread, isLoading }}>
       {children}
     </ThreadsContext.Provider>
   );
