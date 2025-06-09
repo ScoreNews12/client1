@@ -1,16 +1,4 @@
-
-import AuthForm from '@/components/auth/AuthForm';
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Login / Sign Up - EchoThread',
-  description: 'Login or create an account to join EchoThread.',
-};
-
-export default function LoginPage() {
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <AuthForm />
-    </div>
-  );
-}
+// This file is no longer needed and can be deleted.
+// If your build system or other files still reference it, remove those references.
+// For the purpose of this operation, we are effectively deleting it by making it empty.
+// In a real file system, you would delete the file.

@@ -6,33 +6,31 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { useAuth } from '@/contexts/AuthContext';
 import { useThreads } from '@/contexts/ThreadsContext';
 import { useToast } from '@/hooks/use-toast';
-import { Send } from 'lucide-react';
 
 export default function ThreadForm() {
+  const [authorUsername, setAuthorUsername] = useState('');
+  const [authorEmail, setAuthorEmail] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const { user } = useAuth();
+  
   const { addThread } = useThreads();
   const { toast } = useToast();
 
+  const handleReset = () => {
+    setAuthorUsername('');
+    setAuthorEmail('');
+    setTitle('');
+    setContent('');
+  };
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!user) {
-      toast({
-        title: 'Authentication Required',
-        description: 'Please login to post a thread.',
-        variant: 'destructive',
-      });
-      return;
-    }
-    if (!title.trim() || !content.trim()) {
+    if (!authorUsername.trim() || !authorEmail.trim() || !title.trim() || !content.trim()) {
       toast({
         title: 'Missing Information',
-        description: 'Please provide a title and content for your thread.',
+        description: 'Please fill in all fields: Name, E-mail, Title, and Content.',
         variant: 'destructive',
       });
       return;
@@ -41,75 +39,81 @@ export default function ThreadForm() {
     addThread({
       title,
       content,
-      authorEmail: user.email,
-      authorUsername: user.username,
+      authorEmail,
+      authorUsername,
     });
 
     toast({
       title: 'Thread Posted!',
       description: 'Your thread is now live.',
     });
-    setTitle('');
-    setContent('');
+    handleReset(); // Clear form fields
   };
 
-  if (!user) {
-    return (
-      <Card className="mb-8 animate-fade-in"> {/* Removed shadow-lg */}
-        <CardHeader>
-          <CardTitle className="font-headline">Login to Post</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p>You need to be logged in to create a new thread. Please login or sign up.</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
-    <Card className="mb-8 animate-fade-in"> {/* Removed shadow-lg */}
-      <CardHeader>
-        <CardTitle className="text-2xl font-headline">Create a New Thread</CardTitle>
-        <CardDescription>Share your thoughts with the EchoThread community.</CardDescription>
-      </CardHeader>
-      <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
-          <div className="space-y-1">
-            <Label htmlFor="thread-email">Email</Label>
-            <Input id="thread-email" type="email" value={user.email} readOnly disabled />
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="thread-username">Username</Label>
-            <Input id="thread-username" type="text" value={user.username} readOnly disabled />
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="thread-title">Title</Label>
-            <Input
-              id="thread-title"
-              placeholder="Enter thread title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="thread-content">Content</Label>
-            <Textarea
-              id="thread-content"
-              placeholder="What's on your mind?"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              required
-              rows={5}
-            />
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Button type="submit" className="w-full sm:w-auto">
-            <Send className="mr-2 h-4 w-4" /> Post Thread
+    <div className="mb-8 p-6 rounded-none border-t border-b border-purple-400" style={{ backgroundColor: 'hsl(255, 30%, 92%)' }}>
+      <form onSubmit={handleSubmit} onReset={handleReset} className="space-y-3">
+        <div className="flex items-center space-x-2">
+          <Label htmlFor="thread-username" className="w-20 text-red-700 font-semibold">Name:</Label>
+          <Input
+            id="thread-username"
+            placeholder="Your name"
+            value={authorUsername}
+            onChange={(e) => setAuthorUsername(e.target.value)}
+            required
+            className="flex-1 bg-white border-gray-400 focus:border-red-500 focus:ring-red-500"
+          />
+        </div>
+        <div className="flex items-center space-x-2">
+          <Label htmlFor="thread-email" className="w-20 text-red-700 font-semibold">E-mail:</Label>
+          <Input
+            id="thread-email"
+            type="email"
+            placeholder="Your e-mail"
+            value={authorEmail}
+            onChange={(e) => setAuthorEmail(e.target.value)}
+            required
+            className="flex-1 bg-white border-gray-400 focus:border-red-500 focus:ring-red-500"
+          />
+        </div>
+        <div className="flex items-center space-x-2">
+          <Label htmlFor="thread-title" className="w-20 text-red-700 font-semibold">Title:</Label>
+          <Input
+            id="thread-title"
+            placeholder="Thread title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+            className="flex-1 bg-white border-gray-400 focus:border-red-500 focus:ring-red-500"
+          />
+        </div>
+        <div>
+          <Label htmlFor="thread-content" className="block mb-1 text-red-700 font-semibold">Content:</Label>
+          <Textarea
+            id="thread-content"
+            placeholder="What's on your mind?"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            required
+            rows={4}
+            className="bg-white border-gray-400 focus:border-red-500 focus:ring-red-500"
+          />
+        </div>
+        <div className="flex space-x-2 pt-2">
+          <Button 
+            type="submit"
+            className="px-4 py-1.5 bg-neutral-200 border border-neutral-400 rounded-sm text-sm text-black hover:bg-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-offset-1"
+          >
+            Post
           </Button>
-        </CardFooter>
+          <Button 
+            type="reset"
+            className="px-4 py-1.5 bg-neutral-200 border border-neutral-400 rounded-sm text-sm text-black hover:bg-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-offset-1"
+          >
+            Reset
+          </Button>
+        </div>
       </form>
-    </Card>
+    </div>
   );
 }

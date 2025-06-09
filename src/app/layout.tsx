@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { AuthProvider } from '@/contexts/AuthContext';
 import { ThreadsProvider } from '@/contexts/ThreadsContext';
 import { Toaster } from '@/components/ui/toaster';
 import AppHeader from '@/components/layout/Header';
@@ -22,18 +21,16 @@ export default function RootLayout({
         {/* Removed Google Fonts links */}
       </head>
       <body className="font-body antialiased">
-        <AuthProvider>
-          <ThreadsProvider>
-            <div className="flex flex-col min-h-screen">
-              <AppHeader />
-              <main className="flex-grow container mx-auto px-4 py-8">
-                {children}
-              </main>
-              <AppFooter />
-            </div>
-            <Toaster />
-          </ThreadsProvider>
-        </AuthProvider>
+        <ThreadsProvider>
+          <div className="flex flex-col min-h-screen">
+            <AppHeader />
+            <main className="flex-grow container mx-auto px-4 py-8">
+              {children}
+            </main>
+            <AppFooter />
+          </div>
+          <Toaster />
+        </ThreadsProvider>
       </body>
     </html>
   );

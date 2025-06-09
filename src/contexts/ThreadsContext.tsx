@@ -14,35 +14,7 @@ interface ThreadsContextType {
 
 const ThreadsContext = createContext<ThreadsContextType | undefined>(undefined);
 
-const initialThreads: Thread[] = [
-  {
-    id: '1',
-    title: 'Welcome to EchoThread!',
-    authorEmail: 'admin@echothread.com',
-    authorUsername: 'Admin',
-    content: 'This is the first thread. Feel free to post and comment!',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
-    comments: [
-      { 
-        id: 'c1', 
-        threadId: '1', 
-        authorEmail: 'user1@example.com', 
-        authorUsername: 'UserOne', 
-        content: 'Great platform!', 
-        timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString() // 30 minutes ago
-      },
-    ],
-  },
-  {
-    id: '2',
-    title: 'Share Your Thoughts on Next.js 15',
-    authorEmail: 'dev@echothread.com',
-    authorUsername: 'DevGal',
-    content: 'What are your favorite new features in Next.js 15? I am loving the improved server components.',
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1 day ago
-    comments: [],
-  },
-];
+const initialThreads: Thread[] = []; // Removed initial threads
 
 
 export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
@@ -55,14 +27,13 @@ export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
     if (storedThreads) {
       setThreads(JSON.parse(storedThreads));
     } else {
-      setThreads(initialThreads); // Load initial if nothing in storage
+      setThreads(initialThreads); // Load initial (now empty) if nothing in storage
     }
     setIsLoading(false);
   }, []);
 
   useEffect(() => {
     // Persist threads to localStorage whenever they change
-    // This is only for client-side demo, not for production
     if (!isLoading) {
       localStorage.setItem('echoThreads', JSON.stringify(threads));
     }
