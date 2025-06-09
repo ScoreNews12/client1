@@ -32,16 +32,16 @@ export default function AppHeader() {
       {/* Bottom Announcement Bar - Now with scrolling */}
       <div className="bg-announcement-bar-background text-announcement-bar-text py-1 px-2 border-b-2 border-black flex items-center overflow-hidden">
         <span className="text-yellow-300 shrink-0">★★★</span>
-        {/* The marquee container without mask */}
+        {/* The marquee container */}
         <div 
           className="flex-1 mx-2 overflow-hidden whitespace-nowrap"
         >
-          <div className="inline-block animate-marquee">
+          <div className="flex animate-marquee"> {/* Changed from inline-block to flex */}
             {/* Repeated text for seamless scrolling */}
-            <span className="px-2">
+            <span className="px-2 whitespace-nowrap flex-shrink-0">
               継続寄付のお願い！毎月¥10,000が点灯決定！保証回数UP！先着注意！VIP会員特典！立候補点灯！規制低減！
             </span>
-            <span className="px-2">
+            <span className="px-2 whitespace-nowrap flex-shrink-0">
               継続寄付のお願い！毎月¥10,000が点灯決定！保証回数UP！先着注意！VIP会員特典！立候補点灯！規制低減！
             </span>
           </div>
