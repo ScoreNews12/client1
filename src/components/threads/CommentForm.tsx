@@ -23,7 +23,7 @@ export default function CommentForm({ threadId }: CommentFormProps) {
 
   const handleReset = () => {
     // setAuthorUsername('Anonymous');
-    // setAuthorEmail('');
+    setAuthorEmail(''); // Reset email
     setContent('');
   };
 
@@ -33,6 +33,14 @@ export default function CommentForm({ threadId }: CommentFormProps) {
       toast({
         title: 'Missing Information',
         description: 'Please fill in the Comment field.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    if (!authorEmail.trim()) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please fill in the E-mail field. It is required.',
         variant: 'destructive',
       });
       return;
@@ -67,9 +75,10 @@ export default function CommentForm({ threadId }: CommentFormProps) {
           <Input
             id={`comment-email-${threadId}`}
             type="email"
-            placeholder="(sage)"
+            placeholder="Required (sage if desired)"
             value={authorEmail}
             onChange={(e) => setAuthorEmail(e.target.value)}
+            required
             className="flex-1 bg-form-input-background border-form-input-border text-foreground h-6 px-1 py-0.5 text-xs"
           />
         </div>

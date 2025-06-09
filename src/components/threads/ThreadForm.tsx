@@ -20,7 +20,7 @@ export default function ThreadForm() {
 
   const handleReset = () => {
     // setAuthorUsername('Anonymous'); // Keep Anonymous or reset if preferred
-    // setAuthorEmail(''); // Keep email or reset
+    setAuthorEmail(''); // Reset email
     setTitle('');
     setContent('');
   };
@@ -35,13 +35,20 @@ export default function ThreadForm() {
       });
       return;
     }
-    // Email is optional, username defaults to Anonymous
+    if (!authorEmail.trim()) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please fill in the E-mail field. It is required.',
+        variant: 'destructive',
+      });
+      return;
+    }
 
     addThread({
       title,
       content,
-      authorEmail: authorEmail.trim(), // Send empty string if not filled
-      authorUsername: authorUsername.trim() || 'Anonymous', // Ensure Anonymous if empty
+      authorEmail: authorEmail.trim(),
+      authorUsername: authorUsername.trim() || 'Anonymous', 
     });
 
     toast({
@@ -67,9 +74,10 @@ export default function ThreadForm() {
         <Input
           id="thread-email"
           type="email"
-          placeholder="(sage)"
+          placeholder="Required (sage if desired)"
           value={authorEmail}
           onChange={(e) => setAuthorEmail(e.target.value)}
+          required
           className="flex-1 bg-form-input-background border-form-input-border text-foreground h-6 px-1 py-0.5 text-xs"
         />
       </div>
