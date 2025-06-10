@@ -1,2 +1,17 @@
-
-null
+{
+  "id": "poll-1749572286389",
+  "question": "am i cool?",
+  "options": [
+    {
+      "id": "opt-0-1749572286389",
+      "text": "Yes",
+      "votes": 0
+    },
+    {
+      "id": "opt-1-1749572286389",
+      "text": "No",
+      "votes": 0
+    }
+  ],
+  "createdAt": "2025-06-10T16:18:06.389Z"
+}
