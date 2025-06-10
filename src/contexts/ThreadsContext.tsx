@@ -46,16 +46,21 @@ export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
   }, [refreshThreads]);
 
   const addThread = async (threadData: Omit<Thread, 'id' | 'timestamp' | 'comments'>) => {
-    try {
+    // try { // Original had try-catch, but it was just console.erroring, better to let it propagate if needed or handle more gracefully.
       const newThread = await postNewThreadAction(threadData);
-      setThreads((prevThreads) => [newThread, ...prevThreads]);
-    } catch (error) {
-      console.error("Error posting new thread:", error);
-    }
+      if (newThread) { // Check if newThread is not null
+        setThreads((prevThreads) => [newThread, ...prevThreads]);
+      } else {
+        console.error("Error posting new thread: postNewThreadAction returned null");
+        // Optionally, inform the user via toast or other UI feedback
+      }
+    // } catch (error) {
+    //   console.error("Error posting new thread:", error);
+    // }
   };
 
   const addComment = async (threadId: string, commentData: Omit<Comment, 'id' | 'timestamp' | 'threadId'>) => {
-    try {
+    // try {
       const newComment = await postNewCommentAction(threadId, commentData);
       if (newComment) {
         setThreads((prevThreads) =>
@@ -65,10 +70,12 @@ export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
               : thread
           )
         );
+      } else {
+         console.error("Error posting new comment: postNewCommentAction returned null");
       }
-    } catch (error) {
-      console.error("Error posting new comment:", error);
-    }
+    // } catch (error) {
+    //   console.error("Error posting new comment:", error);
+    // }
   };
 
   const getThreadById = (id: string) => {
@@ -82,7 +89,7 @@ export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
         setThreads((prevThreads) => prevThreads.filter(thread => thread.id !== threadId));
         return true;
       }
-      console.warn(`Failed to delete thread ${threadId} on the server or thread not found.`);
+      // console.warn(`Failed to delete thread ${threadId} on the server or thread not found.`); // Already handled by action returning false
       return false;
     } catch (error) {
       console.error("Error deleting thread in context:", error);
@@ -103,7 +110,7 @@ export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
         );
         return true;
       } else {
-        console.warn(`Failed to delete comment ${commentId} from thread ${threadId} on the server or comment not found.`);
+        // console.warn(`Failed to delete comment ${commentId} from thread ${threadId} on the server or comment not found.`); // Already handled by action
         return false;
       }
     } catch (error) {

@@ -6,9 +6,10 @@ import { Button } from '@/components/ui/button';
 import { format, formatDistanceToNow } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
-import { Trash2, MessageSquare, ChevronDown, ChevronUp } from 'lucide-react';
+import { Trash2, ChevronDown, ChevronUp } from 'lucide-react'; // Removed MessageSquare as it's not used
 import { useState } from 'react';
 import type { Comment } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function AdminThreadList() {
   const { threads, deleteThread, deleteComment, isLoading } = useThreads();
@@ -78,12 +79,12 @@ export default function AdminThreadList() {
       <div className="space-y-3">
         {[1, 2, 3].map(i => (
           <div key={i} className="p-3 border border-gray-300 bg-white space-y-2">
-            <div className="h-5 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-            <div className="h-3 bg-gray-200 rounded w-1/4"></div>
+            <Skeleton className="h-5 bg-gray-200 rounded w-3/4" />
+            <Skeleton className="h-3 bg-gray-200 rounded w-1/2" />
+            <Skeleton className="h-3 bg-gray-200 rounded w-1/4" />
             <div className="flex justify-between mt-1">
-              <div className="h-8 bg-blue-200 rounded w-24"></div>
-              <div className="h-8 bg-red-200 rounded w-20"></div>
+              <Skeleton className="h-8 bg-blue-200 rounded w-24" />
+              <Skeleton className="h-8 bg-red-200 rounded w-20" />
             </div>
           </div>
         ))}
