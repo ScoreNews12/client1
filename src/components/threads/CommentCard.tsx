@@ -11,7 +11,8 @@ interface CommentCardProps {
 export default function CommentCard({ comment }: CommentCardProps) {
   return (
     <div className="mb-2 p-2 border border-comment-card-border bg-comment-card-background text-xs animate-fade-in">
-      <div className="flex items-center gap-2 mb-0.5">
+      <div className="flex items-center flex-wrap gap-x-2 gap-y-0.5 mb-0.5">
+        <span className="text-muted-foreground text-[10px]">By:</span>
         <span className="font-semibold text-green-700">{comment.authorUsername || 'Anonymous'}</span>
         <span className="text-muted-foreground text-[10px]">
           ({formatDistanceToNow(new Date(comment.timestamp), { addSuffix: true })})
