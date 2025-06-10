@@ -27,7 +27,7 @@ export default function ThreadCard({ thread }: ThreadCardProps) {
           {thread.comments.length} comment{thread.comments.length !== 1 ? 's' : ''}
         </span>
         <Link href={`/thread/${thread.id}`} className="text-primary hover:text-accent text-xs">
-          [Reply]
+          View Replies
         </Link>
       </div>
     </div>
