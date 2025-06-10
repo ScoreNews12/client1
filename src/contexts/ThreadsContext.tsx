@@ -2,85 +2,72 @@
 "use client";
 
 import type { Thread, Comment } from '@/lib/types';
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { logUserDataAction } from '@/app/actions'; // Import the server action
+import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
+import { 
+  fetchThreadsAction,
+  postNewThreadAction,
+  postNewCommentAction,
+  deleteThreadAction
+} from '@/app/actions';
 
 interface ThreadsContextType {
   threads: Thread[];
-  addThread: (threadData: Omit<Thread, 'id' | 'timestamp' | 'comments'>) => void;
-  addComment: (threadId: string, commentData: Omit<Comment, 'id' | 'timestamp' | 'threadId'>) => void;
+  addThread: (threadData: Omit<Thread, 'id' | 'timestamp' | 'comments'>) => Promise<void>;
+  addComment: (threadId: string, commentData: Omit<Comment, 'id' | 'timestamp' | 'threadId'>) => Promise<void>;
   getThreadById: (id: string) => Thread | undefined;
-  deleteThread: (threadId: string) => void; 
+  deleteThread: (threadId: string) => Promise<void>; 
   isLoading: boolean;
+  refreshThreads: () => Promise<void>;
 }
 
 const ThreadsContext = createContext<ThreadsContextType | undefined>(undefined);
-
-const initialThreads: Thread[] = []; 
-
 
 export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
   const [threads, setThreads] = useState<Thread[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const storedThreads = localStorage.getItem('echoThreads');
-    if (storedThreads) {
-      try {
-        setThreads(JSON.parse(storedThreads));
-      } catch (error) {
-        console.error("Failed to parse threads from localStorage", error);
-        setThreads(initialThreads); 
-      }
-    } else {
-      setThreads(initialThreads); 
+  const refreshThreads = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const serverThreads = await fetchThreadsAction();
+      setThreads(serverThreads);
+    } catch (error) {
+      console.error("Failed to fetch threads from server:", error);
+      setThreads([]); // Set to empty on error
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, []);
 
   useEffect(() => {
-    if (!isLoading) {
-      localStorage.setItem('echoThreads', JSON.stringify(threads));
-    }
-  }, [threads, isLoading]);
+    refreshThreads();
+  }, [refreshThreads]);
 
   const addThread = async (threadData: Omit<Thread, 'id' | 'timestamp' | 'comments'>) => {
-    const newThread: Thread = {
-      ...threadData,
-      id: Date.now().toString() + Math.random().toString(36).substring(2, 7),
-      timestamp: new Date().toISOString(),
-      comments: [],
-    };
-    setThreads((prevThreads) => [newThread, ...prevThreads]);
-
-    // Log user data using the server action
     try {
-      await logUserDataAction(newThread.authorUsername, newThread.authorEmail, 'Posted Thread');
+      const newThread = await postNewThreadAction(threadData);
+      setThreads((prevThreads) => [newThread, ...prevThreads]);
     } catch (error) {
-      console.error("Error logging user data for new thread:", error);
+      console.error("Error posting new thread:", error);
+      // Optionally: show a toast to the user
     }
   };
 
   const addComment = async (threadId: string, commentData: Omit<Comment, 'id' | 'timestamp' | 'threadId'>) => {
-    const newComment: Comment = {
-      ...commentData,
-      id: Date.now().toString() + Math.random().toString(36).substring(2, 7),
-      timestamp: new Date().toISOString(),
-      threadId,
-    };
-    setThreads((prevThreads) =>
-      prevThreads.map((thread) =>
-        thread.id === threadId
-          ? { ...thread, comments: [newComment, ...thread.comments] }
-          : thread
-      )
-    );
-
-    // Log user data using the server action
     try {
-      await logUserDataAction(newComment.authorUsername, newComment.authorEmail, 'Posted Comment');
+      const newComment = await postNewCommentAction(threadId, commentData);
+      if (newComment) {
+        setThreads((prevThreads) =>
+          prevThreads.map((thread) =>
+            thread.id === threadId
+              ? { ...thread, comments: [newComment, ...thread.comments] }
+              : thread
+          )
+        );
+      }
     } catch (error) {
-      console.error("Error logging user data for new comment:", error);
+      console.error("Error posting new comment:", error);
+      // Optionally: show a toast to the user
     }
   };
 
@@ -88,12 +75,18 @@ export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
     return threads.find((thread) => thread.id === id);
   };
 
-  const deleteThread = (threadId: string) => {
-    setThreads((prevThreads) => prevThreads.filter(thread => thread.id !== threadId));
+  const deleteThread = async (threadId: string) => {
+    try {
+      await deleteThreadAction(threadId);
+      setThreads((prevThreads) => prevThreads.filter(thread => thread.id !== threadId));
+    } catch (error) {
+      console.error("Error deleting thread:", error);
+      // Optionally: show a toast to the user
+    }
   };
 
   return (
-    <ThreadsContext.Provider value={{ threads, addThread, addComment, getThreadById, deleteThread, isLoading }}>
+    <ThreadsContext.Provider value={{ threads, addThread, addComment, getThreadById, deleteThread, isLoading, refreshThreads }}>
       {children}
     </ThreadsContext.Provider>
   );
