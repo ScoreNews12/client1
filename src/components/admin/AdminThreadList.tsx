@@ -15,13 +15,30 @@ export default function AdminThreadList() {
   const { toast } = useToast();
   const [expandedThreadId, setExpandedThreadId] = useState<string | null>(null);
 
-  const handleDeleteThread = (threadId: string, threadTitle: string) => {
+  const handleDeleteThread = async (threadId: string, threadTitle: string) => {
     if (window.confirm(`Are you sure you want to delete the thread: "${threadTitle}"? This will also delete all its comments.`)) {
-      deleteThread(threadId);
-      toast({
-        title: "Thread Deleted",
-        description: `Successfully deleted thread: "${threadTitle}".`,
-      });
+      try {
+        const success = await deleteThread(threadId);
+        if (success) {
+          toast({
+            title: "Thread Deleted",
+            description: `Successfully deleted thread: "${threadTitle}".`,
+          });
+        } else {
+          toast({
+            title: "Deletion Failed",
+            description: `Thread "${threadTitle}" could not be deleted. It might have already been removed or an error occurred on the server.`,
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+         console.error("Error trying to delete thread from AdminThreadList:", error);
+         toast({
+            title: "Error",
+            description: "An unexpected error occurred while trying to delete the thread.",
+            variant: "destructive",
+          });
+      }
     }
   };
 

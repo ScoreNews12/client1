@@ -16,8 +16,8 @@ interface ThreadsContextType {
   addThread: (threadData: Omit<Thread, 'id' | 'timestamp' | 'comments'>) => Promise<void>;
   addComment: (threadId: string, commentData: Omit<Comment, 'id' | 'timestamp' | 'threadId'>) => Promise<void>;
   getThreadById: (id: string) => Thread | undefined;
-  deleteThread: (threadId: string) => Promise<void>; 
-  deleteComment: (threadId: string, commentId: string) => Promise<boolean>; // Return boolean to indicate success
+  deleteThread: (threadId: string) => Promise<boolean>; 
+  deleteComment: (threadId: string, commentId: string) => Promise<boolean>;
   isLoading: boolean;
   refreshThreads: () => Promise<void>;
 }
@@ -75,12 +75,18 @@ export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
     return threads.find((thread) => thread.id === id);
   };
 
-  const deleteThread = async (threadId: string) => {
+  const deleteThread = async (threadId: string): Promise<boolean> => {
     try {
-      await deleteThreadAction(threadId);
-      setThreads((prevThreads) => prevThreads.filter(thread => thread.id !== threadId));
+      const success = await deleteThreadAction(threadId);
+      if (success) {
+        setThreads((prevThreads) => prevThreads.filter(thread => thread.id !== threadId));
+        return true;
+      }
+      console.warn(`Failed to delete thread ${threadId} on the server or thread not found.`);
+      return false;
     } catch (error) {
-      console.error("Error deleting thread:", error);
+      console.error("Error deleting thread in context:", error);
+      return false;
     }
   };
 
@@ -102,7 +108,7 @@ export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (error) {
       console.error("Error deleting comment in context:", error);
-      return false; // Indicate failure
+      return false;
     }
   };
 

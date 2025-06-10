@@ -123,10 +123,18 @@ export async function postNewCommentAction(
   return newComment;
 }
 
-export async function deleteThreadAction(threadId: string): Promise<void> {
+export async function deleteThreadAction(threadId: string): Promise<boolean> {
   let threads = await getThreadsFromFile();
+  const originalLength = threads.length;
   threads = threads.filter(thread => thread.id !== threadId);
+  
+  if (threads.length === originalLength) {
+    console.warn(`Thread with id ${threadId} not found for deletion or no change made.`);
+    return false; // Thread not found or no change
+  }
+
   await saveThreadsToFile(threads);
+  return true; // Thread successfully deleted
 }
 
 export async function deleteCommentAction(threadId: string, commentId: string): Promise<boolean> {
@@ -142,12 +150,12 @@ export async function deleteCommentAction(threadId: string, commentId: string): 
   threads[threadIndex].comments = threads[threadIndex].comments.filter(c => c.id !== commentId);
   
   if (threads[threadIndex].comments.length === originalCommentCount) {
-    console.warn(`Comment with id ${commentId} not found in thread ${threadId}.`);
-    return false; // Comment not found
+    console.warn(`Comment with id ${commentId} not found in thread ${threadId} or no change made.`);
+    return false; // Comment not found or no change
   }
 
   await saveThreadsToFile(threads);
-  return true;
+  return true; // Comment successfully deleted
 }
 
 // --- Poll Actions ---
