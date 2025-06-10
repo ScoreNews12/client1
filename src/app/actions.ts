@@ -62,7 +62,7 @@ async function getThreadsFromFile(): Promise<Thread[]> {
       return []; 
     }
     console.error('Error reading threads.json:', error);
-    return [];
+    throw error; // Re-throw to be caught by calling action
   }
 }
 
@@ -71,91 +71,116 @@ async function saveThreadsToFile(threads: Thread[]): Promise<void> {
     await fs.writeFile(THREADS_DATA_FILE, JSON.stringify(threads, null, 2), 'utf-8');
   } catch (error) {
     console.error('Error writing to threads.json:', error);
-    throw error;
+    throw error; // Re-throw to be caught by calling action
   }
 }
 
 export async function fetchThreadsAction(): Promise<Thread[]> {
-  return await getThreadsFromFile();
+  try {
+    return await getThreadsFromFile();
+  } catch (error) {
+    console.error('fetchThreadsAction failed:', error);
+    return []; // Return empty array on error
+  }
 }
 
 export async function postNewThreadAction(
   threadData: Omit<Thread, 'id' | 'timestamp' | 'comments'>
-): Promise<Thread> {
-  const newThread: Thread = {
-    ...threadData,
-    id: Date.now().toString() + Math.random().toString(36).substring(2, 7),
-    timestamp: new Date().toISOString(),
-    comments: [],
-  };
+): Promise<Thread | null> { // Return null on failure
+  try {
+    const newThread: Thread = {
+      ...threadData,
+      id: Date.now().toString() + Math.random().toString(36).substring(2, 7),
+      timestamp: new Date().toISOString(),
+      comments: [],
+    };
 
-  await logUserDataAction(newThread.authorUsername, newThread.authorEmail, 'Posted Thread');
+    await logUserDataAction(newThread.authorUsername, newThread.authorEmail, 'Posted Thread');
 
-  const threads = await getThreadsFromFile();
-  threads.unshift(newThread);
-  await saveThreadsToFile(threads);
-  return newThread;
+    const threads = await getThreadsFromFile();
+    threads.unshift(newThread);
+    await saveThreadsToFile(threads);
+    return newThread;
+  } catch (error) {
+    console.error('Error in postNewThreadAction:', error);
+    return null;
+  }
 }
 
 export async function postNewCommentAction(
   threadId: string,
   commentData: Omit<Comment, 'id' | 'timestamp' | 'threadId'>
 ): Promise<Comment | null> {
-  const newComment: Comment = {
-    ...commentData,
-    id: Date.now().toString() + Math.random().toString(36).substring(2, 7),
-    timestamp: new Date().toISOString(),
-    threadId,
-  };
+  try {
+    const newComment: Comment = {
+      ...commentData,
+      id: Date.now().toString() + Math.random().toString(36).substring(2, 7),
+      timestamp: new Date().toISOString(),
+      threadId,
+    };
 
-  await logUserDataAction(newComment.authorUsername, newComment.authorEmail, 'Posted Comment');
+    await logUserDataAction(newComment.authorUsername, newComment.authorEmail, 'Posted Comment');
 
-  const threads = await getThreadsFromFile();
-  const threadIndex = threads.findIndex(t => t.id === threadId);
+    const threads = await getThreadsFromFile();
+    const threadIndex = threads.findIndex(t => t.id === threadId);
 
-  if (threadIndex === -1) {
-    console.error(`Thread with id ${threadId} not found for adding comment.`);
+    if (threadIndex === -1) {
+      console.error(`Thread with id ${threadId} not found for adding comment.`);
+      return null;
+    }
+
+    threads[threadIndex].comments.unshift(newComment);
+    await saveThreadsToFile(threads);
+    return newComment;
+  } catch (error) {
+    console.error('Error in postNewCommentAction:', error);
     return null;
   }
-
-  threads[threadIndex].comments.unshift(newComment);
-  await saveThreadsToFile(threads);
-  return newComment;
 }
 
 export async function deleteThreadAction(threadId: string): Promise<boolean> {
-  let threads = await getThreadsFromFile();
-  const originalLength = threads.length;
-  threads = threads.filter(thread => thread.id !== threadId);
-  
-  if (threads.length === originalLength) {
-    console.warn(`Thread with id ${threadId} not found for deletion or no change made.`);
-    return false; // Thread not found or no change
-  }
+  try {
+    let threads = await getThreadsFromFile();
+    const originalLength = threads.length;
+    threads = threads.filter(thread => thread.id !== threadId);
+    
+    if (threads.length === originalLength) {
+      console.warn(`Thread with id ${threadId} not found for deletion or no change made.`);
+      return false; 
+    }
 
-  await saveThreadsToFile(threads);
-  return true; // Thread successfully deleted
+    await saveThreadsToFile(threads);
+    return true; 
+  } catch (error) {
+    console.error(`Error in deleteThreadAction for threadId ${threadId}:`, error);
+    return false; 
+  }
 }
 
 export async function deleteCommentAction(threadId: string, commentId: string): Promise<boolean> {
-  const threads = await getThreadsFromFile();
-  const threadIndex = threads.findIndex(t => t.id === threadId);
+  try {
+    let threads = await getThreadsFromFile();
+    const threadIndex = threads.findIndex(t => t.id === threadId);
 
-  if (threadIndex === -1) {
-    console.error(`Thread with id ${threadId} not found for deleting comment.`);
+    if (threadIndex === -1) {
+      console.warn(`Thread with id ${threadId} not found for deleting comment.`);
+      return false;
+    }
+
+    const originalCommentCount = threads[threadIndex].comments.length;
+    threads[threadIndex].comments = threads[threadIndex].comments.filter(c => c.id !== commentId);
+    
+    if (threads[threadIndex].comments.length === originalCommentCount) {
+      console.warn(`Comment with id ${commentId} not found in thread ${threadId} or no change made.`);
+      return false; 
+    }
+
+    await saveThreadsToFile(threads);
+    return true; 
+  } catch (error) {
+    console.error(`Error in deleteCommentAction for threadId ${threadId}, commentId ${commentId}:`, error);
     return false;
   }
-
-  const originalCommentCount = threads[threadIndex].comments.length;
-  threads[threadIndex].comments = threads[threadIndex].comments.filter(c => c.id !== commentId);
-  
-  if (threads[threadIndex].comments.length === originalCommentCount) {
-    console.warn(`Comment with id ${commentId} not found in thread ${threadId} or no change made.`);
-    return false; // Comment not found or no change
-  }
-
-  await saveThreadsToFile(threads);
-  return true; // Comment successfully deleted
 }
 
 // --- Poll Actions ---
@@ -163,16 +188,15 @@ export async function deleteCommentAction(threadId: string, commentId: string): 
 async function getPollFromFile(): Promise<Poll | null> {
   try {
     const fileContent = await fs.readFile(POLL_DATA_FILE, 'utf-8');
-    if (!fileContent.trim()) return null; // Handle empty file
+    if (!fileContent.trim()) return null; 
     return JSON.parse(fileContent) as Poll;
   } catch (error: any) {
     if (error.code === 'ENOENT') {
-      // File doesn't exist, create it with null content (no poll)
       await fs.writeFile(POLL_DATA_FILE, JSON.stringify(null, null, 2), 'utf-8');
       return null;
     }
     console.error('Error reading poll.json:', error);
-    return null;
+    throw error; // Let calling action handle
   }
 }
 
@@ -181,50 +205,73 @@ async function savePollToFile(poll: Poll | null): Promise<void> {
     await fs.writeFile(POLL_DATA_FILE, JSON.stringify(poll, null, 2), 'utf-8');
   } catch (error) {
     console.error('Error writing to poll.json:', error);
-    throw error;
+    throw error; // Let calling action handle
   }
 }
 
 export async function fetchPollAction(): Promise<Poll | null> {
-  return await getPollFromFile();
+  try {
+    return await getPollFromFile();
+  } catch (error) {
+    console.error('fetchPollAction failed:', error);
+    return null;
+  }
 }
 
 export async function votePollAction(optionId: string): Promise<Poll | null> {
-  const poll = await getPollFromFile();
-  if (!poll) {
-    console.error('No active poll to vote on.');
+  try {
+    const poll = await getPollFromFile();
+    if (!poll) {
+      console.error('No active poll to vote on.');
+      return null;
+    }
+
+    const optionIndex = poll.options.findIndex(opt => opt.id === optionId);
+    if (optionIndex === -1) {
+      console.error(`Option with id ${optionId} not found in poll ${poll.id}.`);
+      return poll; 
+    }
+
+    poll.options[optionIndex].votes += 1;
+    await savePollToFile(poll);
+    return poll;
+  } catch (error) {
+    console.error('Error in votePollAction:', error);
+    const currentPoll = await getPollFromFile().catch(() => null); // Attempt to return current state on error
+    return currentPoll;
+  }
+}
+
+export async function createPollAction(question: string, optionTexts: string[]): Promise<Poll | null> {
+  try {
+    if (!question.trim() || optionTexts.some(opt => !opt.trim()) || optionTexts.length < 2) {
+      console.error("Poll question and at least two options are required for creation.");
+      return null; // Return null instead of throwing for client to handle
+    }
+    const newPoll: Poll = {
+      id: `poll-${Date.now().toString()}-${Math.random().toString(36).substring(2,7)}`, // Added randomness
+      question,
+      options: optionTexts.map((text, index) => ({
+        id: `opt-${index}-${Date.now().toString()}-${Math.random().toString(36).substring(2,7)}`, // Added randomness
+        text,
+        votes: 0,
+      })),
+      createdAt: new Date().toISOString(),
+    };
+    await savePollToFile(newPoll);
+    return newPoll;
+  } catch (error) {
+    console.error('Error in createPollAction:', error);
     return null;
   }
-
-  const optionIndex = poll.options.findIndex(opt => opt.id === optionId);
-  if (optionIndex === -1) {
-    console.error(`Option with id ${optionId} not found in poll ${poll.id}.`);
-    return poll; // Return current poll state if option not found
-  }
-
-  poll.options[optionIndex].votes += 1;
-  await savePollToFile(poll);
-  return poll;
 }
 
-export async function createPollAction(question: string, optionTexts: string[]): Promise<Poll> {
-  if (!question.trim() || optionTexts.some(opt => !opt.trim()) || optionTexts.length < 2) {
-    throw new Error("Poll question and at least two options are required.");
+export async function deletePollAction(): Promise<boolean> {
+  try {
+    await savePollToFile(null); 
+    return true;
+  } catch (error) {
+    console.error('Error in deletePollAction:', error);
+    return false;
   }
-  const newPoll: Poll = {
-    id: `poll-${Date.now().toString()}`,
-    question,
-    options: optionTexts.map((text, index) => ({
-      id: `opt-${index}-${Date.now().toString()}`,
-      text,
-      votes: 0,
-    })),
-    createdAt: new Date().toISOString(),
-  };
-  await savePollToFile(newPoll);
-  return newPoll;
-}
-
-export async function deletePollAction(): Promise<void> {
-  await savePollToFile(null); // Set poll to null to "delete" it
 }
