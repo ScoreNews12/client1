@@ -1,3 +1,4 @@
+
 export type User = {
   id: string;
   email: string;
@@ -28,3 +29,17 @@ export type AdminCredentials = {
   username: string;
   password?: string; // Password is used for login, not stored long-term
 };
+
+// Poll types
+export interface PollOption {
+  id: string;
+  text: string;
+  votes: number;
+}
+
+export interface Poll {
+  id: string;
+  question: string;
+  options: PollOption[];
+  createdAt: string; // ISO string
+}

@@ -2,11 +2,13 @@
 "use client";
 
 import AdminThreadList from '@/components/admin/AdminThreadList';
+import AdminPollManager from '@/components/admin/AdminPollManager'; // Import Poll Manager
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { Separator } from '@/components/ui/separator';
 
 export default function AdminDashboardPage() {
   const { isAdminAuthenticated, isLoading, logout } = useAdminAuth();
@@ -19,7 +21,6 @@ export default function AdminDashboardPage() {
   }, [isAdminAuthenticated, isLoading, router]);
 
   if (isLoading || !isAdminAuthenticated) {
-    // Show a loading state or a blank page while redirecting
     return (
         <div className="flex flex-col items-center justify-center min-h-screen p-4">
             <div className="w-full max-w-2xl">
@@ -59,7 +60,20 @@ export default function AdminDashboardPage() {
             Logout
         </Button>
       </div>
-      <AdminThreadList />
+
+      {/* Poll Management Section */}
+      <div className="mb-6 md:mb-8">
+        <h2 className="text-lg md:text-xl font-headline font-semibold text-poll-title-text mb-3">Poll Management</h2>
+        <AdminPollManager />
+      </div>
+
+      <Separator className="my-6 md:my-8 bg-gray-400" />
+
+      {/* Thread Management Section */}
+      <div>
+        <h2 className="text-lg md:text-xl font-headline font-semibold text-poll-title-text mb-3">Thread Management</h2>
+        <AdminThreadList />
+      </div>
     </div>
   );
 }

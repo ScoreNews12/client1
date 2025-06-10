@@ -3,22 +3,40 @@
 
 import { useThreads } from '@/contexts/ThreadsContext';
 import { Button } from '@/components/ui/button';
-import { format } from 'date-fns';
+import { format, formatDistanceToNow } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
+import { Trash2, MessageSquare, ChevronDown, ChevronUp } from 'lucide-react';
+import { useState } from 'react';
+import type { Comment } from '@/lib/types';
 
 export default function AdminThreadList() {
-  const { threads, deleteThread, isLoading } = useThreads();
+  const { threads, deleteThread, deleteComment, isLoading } = useThreads();
   const { toast } = useToast();
+  const [expandedThreadId, setExpandedThreadId] = useState<string | null>(null);
 
-  const handleDelete = (threadId: string, threadTitle: string) => {
-    if (window.confirm(`Are you sure you want to delete the thread: "${threadTitle}"?`)) {
+  const handleDeleteThread = (threadId: string, threadTitle: string) => {
+    if (window.confirm(`Are you sure you want to delete the thread: "${threadTitle}"? This will also delete all its comments.`)) {
       deleteThread(threadId);
       toast({
         title: "Thread Deleted",
         description: `Successfully deleted thread: "${threadTitle}".`,
       });
     }
+  };
+
+  const handleDeleteComment = (threadId: string, commentId: string, commentContent: string) => {
+    if (window.confirm(`Are you sure you want to delete this comment: "${commentContent.substring(0, 50)}..."?`)) {
+      deleteComment(threadId, commentId);
+      toast({
+        title: "Comment Deleted",
+        description: `Successfully deleted comment.`,
+      });
+    }
+  };
+
+  const toggleComments = (threadId: string) => {
+    setExpandedThreadId(expandedThreadId === threadId ? null : threadId);
   };
 
   if (isLoading) {
@@ -29,7 +47,10 @@ export default function AdminThreadList() {
             <div className="h-5 bg-gray-200 rounded w-3/4"></div>
             <div className="h-3 bg-gray-200 rounded w-1/2"></div>
             <div className="h-3 bg-gray-200 rounded w-1/4"></div>
-            <div className="h-8 bg-red-200 rounded w-20 mt-1"></div>
+            <div className="flex justify-between mt-1">
+              <div className="h-8 bg-blue-200 rounded w-24"></div>
+              <div className="h-8 bg-red-200 rounded w-20"></div>
+            </div>
           </div>
         ))}
       </div>
@@ -61,16 +82,57 @@ export default function AdminThreadList() {
                 Comments: {thread.comments.length}
               </p>
             </div>
-            <Button
-              variant="destructive"
-              size="sm"
-              className="px-2 py-0.5 h-auto text-xs bg-red-600 hover:bg-red-700 text-white border-red-700"
-              onClick={() => handleDelete(thread.id, thread.title)}
-            >
-              Delete
-            </Button>
+            <div className="flex flex-col space-y-1 items-end shrink-0 ml-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="px-2 py-0.5 h-auto text-xs bg-form-button-background text-form-button-text border-form-button-border hover:bg-gray-300"
+                onClick={() => toggleComments(thread.id)}
+                disabled={thread.comments.length === 0}
+              >
+                {expandedThreadId === thread.id ? <ChevronUp className="mr-1 h-3 w-3" /> : <ChevronDown className="mr-1 h-3 w-3" />}
+                Comments ({thread.comments.length})
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                className="px-2 py-0.5 h-auto text-xs bg-red-600 hover:bg-red-700 text-white border-red-700"
+                onClick={() => handleDeleteThread(thread.id, thread.title)}
+              >
+                <Trash2 className="mr-1 h-3 w-3" /> Delete Thread
+              </Button>
+            </div>
           </div>
           <p className="mt-1.5 text-foreground/80 text-sm line-clamp-2">{thread.content}</p>
+          
+          {expandedThreadId === thread.id && thread.comments.length > 0 && (
+            <div className="mt-3 pt-3 border-t border-comment-card-border space-y-2">
+              <h4 className="text-sm font-semibold text-poll-title-text mb-1">Comments:</h4>
+              {thread.comments.map((comment: Comment) => (
+                <div key={comment.id} className="p-2 border border-comment-card-border bg-comment-card-background/80 text-[11px]">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-muted-foreground">
+                        By: <span className="font-medium text-green-600">{comment.authorUsername}</span> ({comment.authorEmail})
+                      </p>
+                      <p className="text-muted-foreground">
+                        Posted: {formatDistanceToNow(new Date(comment.timestamp), { addSuffix: true })}
+                      </p>
+                      <p className="text-foreground/80 mt-0.5 text-xs">{comment.content}</p>
+                    </div>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="px-1.5 py-0 h-auto text-[10px] bg-red-500 hover:bg-red-600 text-white border-red-600"
+                      onClick={() => handleDeleteComment(thread.id, comment.id, comment.content)}
+                    >
+                      <Trash2 className="h-2.5 w-2.5" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       ))}
     </div>

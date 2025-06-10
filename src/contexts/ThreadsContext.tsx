@@ -7,7 +7,8 @@ import {
   fetchThreadsAction,
   postNewThreadAction,
   postNewCommentAction,
-  deleteThreadAction
+  deleteThreadAction,
+  deleteCommentAction 
 } from '@/app/actions';
 
 interface ThreadsContextType {
@@ -16,6 +17,7 @@ interface ThreadsContextType {
   addComment: (threadId: string, commentData: Omit<Comment, 'id' | 'timestamp' | 'threadId'>) => Promise<void>;
   getThreadById: (id: string) => Thread | undefined;
   deleteThread: (threadId: string) => Promise<void>; 
+  deleteComment: (threadId: string, commentId: string) => Promise<void>;
   isLoading: boolean;
   refreshThreads: () => Promise<void>;
 }
@@ -33,7 +35,7 @@ export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
       setThreads(serverThreads);
     } catch (error) {
       console.error("Failed to fetch threads from server:", error);
-      setThreads([]); // Set to empty on error
+      setThreads([]); 
     } finally {
       setIsLoading(false);
     }
@@ -49,7 +51,6 @@ export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
       setThreads((prevThreads) => [newThread, ...prevThreads]);
     } catch (error) {
       console.error("Error posting new thread:", error);
-      // Optionally: show a toast to the user
     }
   };
 
@@ -67,7 +68,6 @@ export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (error) {
       console.error("Error posting new comment:", error);
-      // Optionally: show a toast to the user
     }
   };
 
@@ -81,12 +81,28 @@ export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
       setThreads((prevThreads) => prevThreads.filter(thread => thread.id !== threadId));
     } catch (error) {
       console.error("Error deleting thread:", error);
-      // Optionally: show a toast to the user
+    }
+  };
+
+  const deleteComment = async (threadId: string, commentId: string) => {
+    try {
+      const success = await deleteCommentAction(threadId, commentId);
+      if (success) {
+        setThreads((prevThreads) =>
+          prevThreads.map((thread) =>
+            thread.id === threadId
+              ? { ...thread, comments: thread.comments.filter(c => c.id !== commentId) }
+              : thread
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error deleting comment:", error);
     }
   };
 
   return (
-    <ThreadsContext.Provider value={{ threads, addThread, addComment, getThreadById, deleteThread, isLoading, refreshThreads }}>
+    <ThreadsContext.Provider value={{ threads, addThread, addComment, getThreadById, deleteThread, deleteComment, isLoading, refreshThreads }}>
       {children}
     </ThreadsContext.Provider>
   );
