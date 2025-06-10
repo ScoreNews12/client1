@@ -17,7 +17,7 @@ interface ThreadsContextType {
   addComment: (threadId: string, commentData: Omit<Comment, 'id' | 'timestamp' | 'threadId'>) => Promise<void>;
   getThreadById: (id: string) => Thread | undefined;
   deleteThread: (threadId: string) => Promise<void>; 
-  deleteComment: (threadId: string, commentId: string) => Promise<void>;
+  deleteComment: (threadId: string, commentId: string) => Promise<boolean>; // Return boolean to indicate success
   isLoading: boolean;
   refreshThreads: () => Promise<void>;
 }
@@ -84,7 +84,7 @@ export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const deleteComment = async (threadId: string, commentId: string) => {
+  const deleteComment = async (threadId: string, commentId: string): Promise<boolean> => {
     try {
       const success = await deleteCommentAction(threadId, commentId);
       if (success) {
@@ -95,9 +95,14 @@ export const ThreadsProvider = ({ children }: { children: ReactNode }) => {
               : thread
           )
         );
+        return true;
+      } else {
+        console.warn(`Failed to delete comment ${commentId} from thread ${threadId} on the server or comment not found.`);
+        return false;
       }
     } catch (error) {
-      console.error("Error deleting comment:", error);
+      console.error("Error deleting comment in context:", error);
+      return false; // Indicate failure
     }
   };
 

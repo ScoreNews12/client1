@@ -25,13 +25,30 @@ export default function AdminThreadList() {
     }
   };
 
-  const handleDeleteComment = (threadId: string, commentId: string, commentContent: string) => {
+  const handleDeleteComment = async (threadId: string, commentId: string, commentContent: string) => {
     if (window.confirm(`Are you sure you want to delete this comment: "${commentContent.substring(0, 50)}..."?`)) {
-      deleteComment(threadId, commentId);
-      toast({
-        title: "Comment Deleted",
-        description: `Successfully deleted comment.`,
-      });
+      try {
+        const success = await deleteComment(threadId, commentId);
+        if (success) {
+          toast({
+            title: "Comment Deleted",
+            description: `Successfully deleted comment.`,
+          });
+        } else {
+          toast({
+            title: "Deletion Failed",
+            description: "Comment could not be deleted. It might have already been removed or an error occurred on the server.",
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+         console.error("Error trying to delete comment from AdminThreadList:", error);
+         toast({
+            title: "Error",
+            description: "An unexpected error occurred while trying to delete the comment.",
+            variant: "destructive",
+          });
+      }
     }
   };
 
